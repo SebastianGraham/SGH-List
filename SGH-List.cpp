@@ -3,6 +3,7 @@
 #include "imgui/imgui_impl_opengl3.h"
 
 #include <GLFW/glfw3.h>
+#include "PrintFILE.h"
 
 #include <iostream>
 int main(void)
@@ -191,16 +192,16 @@ int main(void)
 
         if (make_list_file)
         {
-           // PrintFILE x;
-            //x.createFile(listName);
+           PrintFILE x;
+            x.createFile(listName);
             make_list_file = false;
         }
 
         if (print_2_file)
         {
-            //PrintFILE x;
-            //x.writeList(listName, uppgradeNameArray, uppgradeCostArray,
-               // uppgradeNrArray, unitFigerCount, unitCost, unitName, unitNotw, UnitNr);
+            PrintFILE x;
+            x.writeList(listName, uppgradeNameArray, uppgradeCostArray,
+                uppgradeNrArray, unitFigerCount, unitCost, unitName, unitNotw, UnitNr);
             print_2_file = false;
         }
 
