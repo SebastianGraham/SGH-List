@@ -15,7 +15,7 @@ int main(void)
         return -1;
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(640, 480, "SGH_List 2.1", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -297,6 +297,7 @@ int main(void)
 
                             ImGui::Text("nr of figurs: ");
                             ImGui::SameLine();
+                            ImGui::PushItemWidth(120);
                             ImGui::InputInt("##", &unitFigerCount[row]);
                             ImGui::EndChild();
                         }
@@ -309,6 +310,7 @@ int main(void)
 
                             ImGui::Text("cost per figur: ");
                             ImGui::SameLine();
+                            ImGui::PushItemWidth(120);
                             ImGui::InputInt("##", &unitCost[row]);
 
                             ImGui::EndChild();
@@ -319,8 +321,10 @@ int main(void)
                         if (ImGui::BeginMenu("Edit -"))                                                // unit setings
                         {
                             ImGui::Checkbox("Show Note", &showNote[row]);
+                            ImGui::PushItemWidth(90);
                             ImGui::InputInt("Nr of uppgrade", &uppgradeNrArray[row]);
                             ImGui::Text("Uppgrade's");
+                            ImGui::PushItemWidth(90);
                             ImGui::InputInt("select uppgrade", &uppgradeSelected);
                             ImGui::InputInt("Uppgrade Cost", &setUppgradeCost);
                             {
@@ -346,7 +350,7 @@ int main(void)
                             {// sett figur count child window
                                 std::string print_Uppgrade = "Name" + row + i;
                                 ImGui::BeginChild(print_Uppgrade.c_str(), ImVec2(ImGui::GetContentRegionAvail().x * 0.25f, 24), false);
-
+                               
                                 ImGui::InputText("name", setUppgradeName, IM_ARRAYSIZE(setUppgradeName));
                                 ImGui::SameLine();
                                 if (ImGui::SmallButton("Save"))
@@ -362,6 +366,7 @@ int main(void)
 
                                 ImGui::BeginChild(print_Uppgrade.c_str(), ImVec2(ImGui::GetContentRegionAvail().x * 0.33f, 24), false);
 
+                                ImGui::PushItemWidth(120);
                                 ImGui::InputInt("cost", &uppgradeCostArray[row][i]);
 
                                 ImGui::EndChild();
