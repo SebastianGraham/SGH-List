@@ -15,7 +15,7 @@ int main(void)
         return -1;
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "SGH_List 2.1", NULL, NULL);
+    window = glfwCreateWindow(640, 480, "SGH_List 2.2", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -34,7 +34,7 @@ int main(void)
     //style
 
     ImGui::StyleColorsDark();
-
+    
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330");
 
@@ -63,10 +63,10 @@ int main(void)
 
     static char listName[32] = "";
 
-    int uppgradeCost = 0, uppgradeNr = 0, uppgradeNrArray[20] = {},
-        unitFigerCount[200] = {}, UnitNr = 3, unitCost[200] = {};
+    int         uppgradeCost = 0, uppgradeNr = 0, uppgradeNrArray[20] = {},
+                 unitFigerCount[200] = {}, UnitNr = 3, unitCost[200] = {};
 
-    int floot_int = 0;                                   // for side menyen i add unit
+    int         floot_int = 0;                                   // for side menyen i add unit
 
     // sett upgrade velus
     int         uppgradeSelected = 0;
@@ -74,7 +74,7 @@ int main(void)
     int         setUppgradeCost = 0;
     static char setUppgradeName[32] = "";
     bool        showNote[20] = { false };
-
+           
     //per unit verdier
     static char unitName[200][32] = { {} };
 
@@ -250,25 +250,27 @@ int main(void)
                 ImGuiWindowFlags window_flags = ImGuiWindowFlags_HorizontalScrollbar;
                 ImGui::BeginChild("List side", ImVec2(ImGui::GetContentRegionAvail().x * 0.7f, winSiz.y), false, window_flags);
                 {
-                    ImGui::BeginChild("topPartL", ImVec2(ImGui::GetContentRegionAvail().x * 0.7f, 30), false, ImGuiWindowFlags_NoScrollbar);
+                    ImGui::BeginChild("topPartL", ImVec2(ImGui::GetContentRegionAvail().x * 0.40f, 30), false, ImGuiWindowFlags_NoScrollbar);
 
                     ImGui::Text("List name:");
                     ImGui::SameLine();
+                    ImGui::PushItemWidth(450);
                     ImGui::InputText("##", listName, IM_ARRAYSIZE(listName));
 
                     ImGui::EndChild();
                 }
                 ImGui::SameLine();
                 {
-                    ImGui::BeginChild("topPartR", ImVec2(ImGui::GetContentRegionAvail().x * 1.0f, 30), false, ImGuiWindowFlags_NoScrollbar);
+                    ImGui::BeginChild("topPartR", ImVec2(ImGui::GetContentRegionAvail().x * 0.50f, 30), false, ImGuiWindowFlags_NoScrollbar);
 
-                    ImGui::Text("Nr Of Unit's ->");
+                    ImGui::Text("Nr Of Unit's");
                     ImGui::SameLine();
                     ImGui::PushItemWidth(90);
                     ImGui::InputInt("##", &UnitNr);
 
                     ImGui::EndChild();
                 }
+
 
                 for (int row = 0; row < UnitNr; row++)
                 {
@@ -278,7 +280,7 @@ int main(void)
                         ImGui::TableNextColumn();
 
                         {                                                                           // sett figur count child window
-                            ImGui::BeginChild("unit name", ImVec2(ImGui::GetContentRegionAvail().x * 0.64f, 21), false, window_flags);
+                            ImGui::BeginChild("unit name", ImVec2(ImGui::GetContentRegionAvail().x * 0.70f, 21), false, window_flags);
 
                             ImGui::Text("Name -> ");
                             ImGui::SameLine();
@@ -288,37 +290,7 @@ int main(void)
                         }
 
                         ImGui::SameLine();
-                        int tootaltNrOfFigur = unitFigerCount[row] * unitCost[row];
-                        ImGui::Text("cost figur's: %d", tootaltNrOfFigur);
-
-                        {                                                                           // sett figur count child window
-                            ImGuiWindowFlags window_flags = ImGuiWindowFlags_HorizontalScrollbar;
-                            ImGui::BeginChild("figu count", ImVec2(ImGui::GetContentRegionAvail().x * 0.48f, 21), false, window_flags);
-
-                            ImGui::Text("nr of figurs: ");
-                            ImGui::SameLine();
-                            ImGui::PushItemWidth(120);
-                            ImGui::InputInt("##", &unitFigerCount[row]);
-                            ImGui::EndChild();
-                        }
-
-                        ImGui::SameLine();
-
-                        {                                                                           // set Figur cost child window
-                            ImGuiWindowFlags window_flags = ImGuiWindowFlags_HorizontalScrollbar;
-                            ImGui::BeginChild("figur cost", ImVec2(ImGui::GetContentRegionAvail().x * 0.88f, 21), false, window_flags);
-
-                            ImGui::Text("cost per figur: ");
-                            ImGui::SameLine();
-                            ImGui::PushItemWidth(120);
-                            ImGui::InputInt("##", &unitCost[row]);
-
-                            ImGui::EndChild();
-                        }
-                        ImGui::SameLine();
-
-
-                        if (ImGui::BeginMenu("Edit -"))                                                // unit setings
+                        if (ImGui::BeginMenu("- Edit -"))                                    // unit setings
                         {
                             ImGui::Checkbox("Show Note", &showNote[row]);
                             ImGui::PushItemWidth(90);
@@ -340,7 +312,36 @@ int main(void)
                             };
 
                             ImGui::EndMenu();                                                      //sluter meny
-                        }                                                                          // end of unit setings
+                        }
+
+                        {                                                                           // sett figur count child window
+                            ImGuiWindowFlags window_flags = ImGuiWindowFlags_HorizontalScrollbar;
+                            ImGui::BeginChild("figu count", ImVec2(ImGui::GetContentRegionAvail().x * 0.18f, 21), false, window_flags);
+
+                            ImGui::Text("nr of figurs: ");
+                            ImGui::SameLine();
+                            ImGui::PushItemWidth(120);
+                            ImGui::InputInt("##", &unitFigerCount[row]);
+                            ImGui::EndChild();
+                        }
+
+                        ImGui::SameLine();
+
+                        {                                                                           // set Figur cost child window
+                            ImGuiWindowFlags window_flags = ImGuiWindowFlags_HorizontalScrollbar;
+                            ImGui::BeginChild("figur cost", ImVec2(ImGui::GetContentRegionAvail().x * 0.27f, 21), false, window_flags);
+
+                            ImGui::Text("cost per figur: ");
+                            ImGui::SameLine();
+                            ImGui::PushItemWidth(120);
+                            ImGui::InputInt("##", &unitCost[row]);
+
+                            ImGui::EndChild();
+                        }
+                        
+                        ImGui::SameLine();
+                        int tootaltNrOfFigur = unitFigerCount[row] * unitCost[row];
+                        ImGui::Text("cost figur's: %d", tootaltNrOfFigur);
 
 
                         float uppgradeWindowSize = uppgradeNrArray[row] * 21;
@@ -349,14 +350,25 @@ int main(void)
                         {
                             {// sett figur count child window
                                 std::string print_Uppgrade = "Name" + row + i;
-                                ImGui::BeginChild(print_Uppgrade.c_str(), ImVec2(ImGui::GetContentRegionAvail().x * 0.25f, 24), false);
-                               
-                                ImGui::InputText("name", setUppgradeName, IM_ARRAYSIZE(setUppgradeName));
-                                ImGui::SameLine();
-                                if (ImGui::SmallButton("Save"))
+                                ImGui::BeginChild(print_Uppgrade.c_str(), ImVec2(ImGui::GetContentRegionAvail().x * 0.33f, 24), false);
+
+                                ImGui::PushItemWidth(80);
+                                if (ImGui::BeginMenu("Name ->"))                                    // unit setings
                                 {
-                                    uppgradeNameArray[row][i] = setUppgradeName;
+                                    ImGui::InputText("##", setUppgradeName, IM_ARRAYSIZE(setUppgradeName));
+                                    ImGui::SameLine();
+                                    if (ImGui::SmallButton("Save"))
+                                    {
+                                        uppgradeNameArray[row][i] = setUppgradeName;
+                                    }
+
+                                    ImGui::EndMenu();                                                      //sluter meny
                                 }
+                                
+                                ImGui::SameLine();
+                                
+                                ImGui::Text(uppgradeNameArray[row][i].c_str());
+                                
 
                                 ImGui::EndChild();
                             }                                                                       // sett figur count child window
@@ -364,7 +376,7 @@ int main(void)
                             {                                                                       // sett figur count child window
                                 std::string print_Uppgrade = "Uppgarde" + row + i;
 
-                                ImGui::BeginChild(print_Uppgrade.c_str(), ImVec2(ImGui::GetContentRegionAvail().x * 0.33f, 24), false);
+                                ImGui::BeginChild(print_Uppgrade.c_str(), ImVec2(ImGui::GetContentRegionAvail().x * 0.25f, 24), false);
 
                                 ImGui::PushItemWidth(120);
                                 ImGui::InputInt("cost", &uppgradeCostArray[row][i]);
