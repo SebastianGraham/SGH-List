@@ -34,17 +34,14 @@ int main(void)
     //style
 
     ImGui::StyleColorsDark();
-    
+
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330");
 
-    /*==============================================================================================
-    *   VELUS
-   =================================================================================================*/
    //window open velus
-    bool statestik = false, ImGuiDemo = false,
-        make_list_file = false, print_2_file = false;
-    ImVec4 clear_color = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);
+    bool        statestik = false, ImGuiDemo = false,
+                make_list_file = false, print_2_file = false;
+    ImVec4      clear_color = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);
 
     //Valu for Upgrade array's                                                           //ARRAY FOR VER VERDI PER UPGRADE, STYRES AV I FRA FORLOOP
     std::string uppgradeNameArray[200][20];
@@ -54,34 +51,42 @@ int main(void)
         }
     };
 
-    int uppgradeCostArray[200][20];                                         //UNTAK UPPGARDE NR SOM HOLDER ANATALE UPGRADES 
+    int     uppgradeCostArray[200][20];                                         //UNTAK UPPGARDE NR SOM HOLDER ANATALE UPGRADES 
     for (int i = 0; i < 200; i++) {
         for (int j = 0; j < 20; j++) {
             uppgradeCostArray[i][j] = 0;
         }
     };
 
+    int     uppgradeInnputArray[200][20];                                         //UNTAK UPPGARDE NR SOM HOLDER ANATALE UPGRADES 
+    for (int i = 0; i < 200; i++) {
+        for (int j = 0; j < 20; j++) {
+            uppgradeInnputArray[i][j] = 0;
+        }
+    };
+
     static char listName[32] = "";
 
     int         uppgradeCost = 0, uppgradeNr = 0, uppgradeNrArray[20] = {},
-                 unitFigerCount[200] = {}, UnitNr = 3, unitCost[200] = {};
+                unitFigerCount[200] = {}, UnitNr = 3, unitCost[200] = {};
 
     int         floot_int = 0;                                   // for side menyen i add unit
     int         tootleSum = 0;
 
     // sett upgrade velus
-    int         uppgradeSelected = 0;
-    int         unitSelected = 0;
-    int         setUppgradeCost = 0;
+    int         uppgradeSelected = 0,
+                unitSelected = 0,
+                setUppgradeCost = 0;
     static char setUppgradeName[32] = "";
-    bool        showNote[20] = { false };
-           
-    //per unit verdier
+    bool        showUnitNote[20] = { false },
+                ShowUppgardeNote[200][20] = { {false} },
+                uppgradeType[200][20] = { {false} };
+    
     static char unitName[200][32] = { {} };
 
-    static char unitNotw[200][255 * 6] = { {} };
+    static char unitNote[200][255 * 6] = { {} };
 
-
+    static char uppgradeNote[200][20][255 * 6] = { {} };
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -202,7 +207,7 @@ int main(void)
         {
             PrintFILE x;
             x.writeList(listName, uppgradeNameArray, uppgradeCostArray,
-                uppgradeNrArray, unitFigerCount, unitCost, unitName, unitNotw, UnitNr);
+                uppgradeNrArray, unitFigerCount, unitCost, unitName, unitNote, UnitNr);
             print_2_file = false;
         }
 
@@ -291,28 +296,12 @@ int main(void)
 
                             ImGui::EndChild();
                         }
-
                         ImGui::SameLine();
                         if (ImGui::BeginMenu("- Edit -"))                                    // unit setings
                         {
-                            ImGui::Checkbox("Show unit Note", &showNote[row]);
+                            ImGui::Checkbox("Show unit Note", &showUnitNote[row]);
                             ImGui::PushItemWidth(90);
                             ImGui::InputInt("Nr of uppgrade", &uppgradeNrArray[row]);
-                            ImGui::Text("Uppgrade's");
-                            ImGui::PushItemWidth(90);
-                            ImGui::InputInt("select uppgrade", &uppgradeSelected);
-                            ImGui::InputInt("Uppgrade Cost", &setUppgradeCost);
-                            {
-                                ImGui::BeginChild("sett uppgarde name", ImVec2(ImGui::GetContentRegionAvail().x * 0.71f, 21), false);
-                                ImGui::InputText("name", setUppgradeName, IM_ARRAYSIZE(setUppgradeName));
-                                ImGui::EndChild();
-                            }
-
-                            if (ImGui::SmallButton("   !Sett name end pric!   "))
-                            {
-                                uppgradeCostArray[row][uppgradeSelected] = setUppgradeCost;
-                                uppgradeNameArray[row][uppgradeSelected] = setUppgradeName;
-                            };
 
                             ImGui::EndMenu();                                                      //sluter meny
                         }
@@ -347,11 +336,10 @@ int main(void)
                         ImGui::Text("cost figur's: %d", tootaltNrOfFigur);
 
 
-                        float uppgradeWindowSize = uppgradeNrArray[row] * 21;
                         int lodeSpot = uppgradeNrArray[row];
                         for (short int i = 0; i < lodeSpot; i++)
                         {
-                            {// sett figur count child window
+                            {//name
                                 std::string print_Uppgrade = "Name" + row + i;
                                 ImGui::BeginChild(print_Uppgrade.c_str(), ImVec2(ImGui::GetContentRegionAvail().x * 0.33f, 24), false);
 
@@ -364,35 +352,58 @@ int main(void)
                                     {
                                         uppgradeNameArray[row][i] = setUppgradeName;
                                     }
+                                    
+                                    ImGui::Checkbox("Uppgarde Note", &ShowUppgardeNote[row][i]);
+                                    ImGui::SameLine();
+                                    ImGui::Checkbox("figur uppgrade", &uppgradeType[row][i]);
 
                                     ImGui::EndMenu();                                                      //sluter meny
                                 }
 
                                 ImGui::SameLine();
-
                                 ImGui::Text(uppgradeNameArray[row][i].c_str());
 
-
                                 ImGui::EndChild();
-                            }                                                                       // sett figur count child window
+                            }//name                                                                       // sett figur count child window
                             ImGui::SameLine();                                                      //same line :D
-                            {                                                                       // sett figur count child window
+                            {//cost                                                                       // sett figur count child window
                                 std::string print_Uppgrade = "Uppgarde" + row + i;
 
                                 ImGui::BeginChild(print_Uppgrade.c_str(), ImVec2(ImGui::GetContentRegionAvail().x * 0.25f, 24), false);
 
                                 ImGui::PushItemWidth(120);
-                                ImGui::InputInt("cost", &uppgradeCostArray[row][i]);
+                                ImGui::InputInt("cost", &uppgradeInnputArray[row][i]);
 
+                                if (uppgradeType[row][i])
+                                {
+                                   uppgradeCostArray[row][i] = uppgradeInnputArray[row][i] * unitFigerCount[row];
+                                }
+                                else
+                                {
+                                    uppgradeCostArray[row][i] = uppgradeInnputArray[row][i];
+                                }
                                 ImGui::EndChild();
-                            }// sett figur count child window
-                        }
+                            }//cost
+                            
+                            {
+                                if (ShowUppgardeNote[row][i])
+                                {
+                                    ImGui::SameLine();
+                                    
+                                    static ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput;
+                                    flags = ImGuiInputTextFlags_CtrlEnterForNewLine;
+                                    ImGui::InputTextMultiline("##", uppgradeNote[row][i], IM_ARRAYSIZE(uppgradeNote[row][i]),
+                                                                                ImVec2(-FLT_MIN, 90), flags);
+                                    
+                                }
+                            }
+                        }// i
 
-                        if (showNote[row])
+                        if (showUnitNote[row])
                         {
                             static ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput;
                             flags = ImGuiInputTextFlags_CtrlEnterForNewLine;
-                            ImGui::InputTextMultiline("##source", unitNotw[row], IM_ARRAYSIZE(unitNotw), ImVec2(-FLT_MIN, uppgradeWindowSize), flags);
+                            ImGui::InputTextMultiline("##source", unitNote[row], IM_ARRAYSIZE(unitNote[row]), ImVec2(-FLT_MIN, 80), flags);
                         }
 
                         ImGui::TableNextColumn();
