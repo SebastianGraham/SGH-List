@@ -67,6 +67,7 @@ int main(void)
                  unitFigerCount[200] = {}, UnitNr = 3, unitCost[200] = {};
 
     int         floot_int = 0;                                   // for side menyen i add unit
+    int         tootleSum = 0;
 
     // sett upgrade velus
     int         uppgradeSelected = 0;
@@ -267,6 +268,8 @@ int main(void)
                     ImGui::SameLine();
                     ImGui::PushItemWidth(90);
                     ImGui::InputInt("##", &UnitNr);
+                    ImGui::SameLine();
+                    ImGui::Text("   tootle List cost: %d", tootleSum);
 
                     ImGui::EndChild();
                 }
@@ -292,7 +295,7 @@ int main(void)
                         ImGui::SameLine();
                         if (ImGui::BeginMenu("- Edit -"))                                    // unit setings
                         {
-                            ImGui::Checkbox("Show Note", &showNote[row]);
+                            ImGui::Checkbox("Show unit Note", &showNote[row]);
                             ImGui::PushItemWidth(90);
                             ImGui::InputInt("Nr of uppgrade", &uppgradeNrArray[row]);
                             ImGui::Text("Uppgrade's");
@@ -338,7 +341,7 @@ int main(void)
 
                             ImGui::EndChild();
                         }
-                        
+
                         ImGui::SameLine();
                         int tootaltNrOfFigur = unitFigerCount[row] * unitCost[row];
                         ImGui::Text("cost figur's: %d", tootaltNrOfFigur);
@@ -364,11 +367,11 @@ int main(void)
 
                                     ImGui::EndMenu();                                                      //sluter meny
                                 }
-                                
+
                                 ImGui::SameLine();
-                                
+
                                 ImGui::Text(uppgradeNameArray[row][i].c_str());
-                                
+
 
                                 ImGui::EndChild();
                             }                                                                       // sett figur count child window
@@ -396,17 +399,30 @@ int main(void)
 
                         int tootleUppgardeCost = 0;
 
-                        for (int i = 0; i < 19; i++)
+                        for (int i = 0; i < uppgradeNrArray[row]; i++)
                         {
                             tootleUppgardeCost = tootleUppgardeCost + uppgradeCostArray[row][i];
                         }
 
                         int tootalCostOfUnit = unitFigerCount[row] * unitCost[row] + tootleUppgardeCost;
-                        ImGui::Text("Tootal cost: %d", tootalCostOfUnit);
+                        ImGui::Text("Tootal Unit cost: %d", tootalCostOfUnit);
 
                         ImGui::EndTable();
                     }
+                }// row
+
+                int         tootleCost = 0;
+                for (size_t row = 0; row < UnitNr; row++)
+                {
+                    for (int i = 0; i < uppgradeNrArray[row]; i++)
+                    {
+                        tootleCost = tootleCost + uppgradeCostArray[row][i];
+                    }
+                    tootleCost = tootleCost + unitFigerCount[row] * unitCost[row];
+                    tootleSum = tootleCost;
                 }
+                ImGui::Text("tootle List cost: %d", tootleCost);
+
                 ImGui::EndChild();//end child window
             }// liste side
 
