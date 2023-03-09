@@ -15,7 +15,7 @@ int main(void)
         return -1;
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "SGH_List 2.2", NULL, NULL);
+    window = glfwCreateWindow(1280, 854, "SGH_List", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -68,25 +68,22 @@ int main(void)
     static char listName[32] = "";
 
     int         uppgradeCost = 0, uppgradeNr = 0, uppgradeNrArray[20] = {},
-                unitFigerCount[200] = {}, UnitNr = 3, unitCost[200] = {};
-
-    int         floot_int = 0;                                   // for side menyen i add unit
-    int         tootleSum = 0;
+                unitFigerCount[200] = {}, UnitNr = 3, unitCost[200] = {},
+                tootleSum = 0;
 
     // sett upgrade velus
     int         uppgradeSelected = 0,
                 unitSelected = 0,
                 setUppgradeCost = 0;
-    static char setUppgradeName[32] = "";
+    
     bool        showUnitNote[20] = { false },
                 ShowUppgardeNote[200][20] = { {false} },
                 uppgradeType[200][20] = { {false} };
     
-    static char unitName[200][32] = { {} };
-
-    static char unitNote[200][255 * 6] = { {} };
-
-    static char uppgradeNote[200][20][255 * 6] = { {} };
+    static char unitName[200][32] = { {} },
+                setUppgradeName[32] = "",
+                unitNote[200][255 * 6] = { {} },
+                uppgradeNote[200][20][255 * 6] = { {} };
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -182,8 +179,6 @@ int main(void)
                 ImGuiWindowFlags window_flags = ImGuiWindowFlags_HorizontalScrollbar;
                 ImGui::BeginChild("Rendom velus", ImVec2(ImGui::GetContentRegionAvail().x * 0.99f, 260), false, window_flags);
 
-                ImGui::Text(" <floot_int> "); ImGui::SameLine();
-                ImGui::Text("%d", floot_int); ImGui::SameLine();
                 ImGui::Text(" <uppgradeNr> "); ImGui::SameLine();
                 ImGui::Text("%d", uppgradeNr); ImGui::SameLine();
                 ImGui::Text(" <uppgradeCost> "); ImGui::SameLine();
@@ -225,6 +220,8 @@ int main(void)
             main_window_flags |= ImGuiWindowFlags_MenuBar;
             main_window_flags |= ImGuiWindowFlags_NoResize;
             main_window_flags |= ImGuiWindowFlags_NoScrollWithMouse;
+            main_window_flags |= ImGuiWindowFlags_NoBackground;
+            main_window_flags |= ImGuiWindowFlags_NoScrollbar;
             ImGui::Begin("Main", NULL, main_window_flags);
 
             if (ImGui::BeginMenuBar())
@@ -241,7 +238,7 @@ int main(void)
                 if (ImGui::BeginMenu("Print"))                                  // queek print menu
                 {
                     ImGui::MenuItem("Make .txt list", NULL, &make_list_file);   // make a .txt file
-                    ImGui::MenuItem("Update List", NULL, &print_2_file);        // Uppdate List
+                    ImGui::MenuItem("Save", NULL, &print_2_file);        // Uppdate List
 
                     ImGui::EndMenu();
                 }
@@ -250,7 +247,6 @@ int main(void)
             }
 
             ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
-
 
             {
                 ImGuiWindowFlags window_flags = ImGuiWindowFlags_HorizontalScrollbar;
@@ -299,10 +295,10 @@ int main(void)
                         ImGui::SameLine();
                         if (ImGui::BeginMenu("- Edit -"))                                    // unit setings
                         {
-                            ImGui::Checkbox("Show unit Note", &showUnitNote[row]);
                             ImGui::PushItemWidth(90);
                             ImGui::InputInt("Nr of uppgrade", &uppgradeNrArray[row]);
-
+                            ImGui::Checkbox("Show unit Note", &showUnitNote[row]);
+                            
                             ImGui::EndMenu();                                                      //sluter meny
                         }
 
@@ -335,13 +331,12 @@ int main(void)
                         int tootaltNrOfFigur = unitFigerCount[row] * unitCost[row];
                         ImGui::Text("cost figur's: %d", tootaltNrOfFigur);
 
-
                         int lodeSpot = uppgradeNrArray[row];
                         for (short int i = 0; i < lodeSpot; i++)
                         {
                             {//name
-                                std::string print_Uppgrade = "Name" + row + i;
-                                ImGui::BeginChild(print_Uppgrade.c_str(), ImVec2(ImGui::GetContentRegionAvail().x * 0.33f, 24), false);
+                                std::string print_Uppgrade_name = "Name" + row + i;
+                                ImGui::BeginChild(print_Uppgrade_name.c_str(), ImVec2(ImGui::GetContentRegionAvail().x * 0.33f, 24), false);
 
                                 ImGui::PushItemWidth(80);
                                 if (ImGui::BeginMenu("Name ->"))                                    // unit setings
@@ -367,9 +362,9 @@ int main(void)
                             }//name                                                                       // sett figur count child window
                             ImGui::SameLine();                                                      //same line :D
                             {//cost                                                                       // sett figur count child window
-                                std::string print_Uppgrade = "Uppgarde" + row + i;
+                                std::string print_Uppgrade_cost = "Cost" + row + i;
 
-                                ImGui::BeginChild(print_Uppgrade.c_str(), ImVec2(ImGui::GetContentRegionAvail().x * 0.25f, 24), false);
+                                ImGui::BeginChild(print_Uppgrade_cost.c_str(), ImVec2(ImGui::GetContentRegionAvail().x * 0.25f, 24), false);
 
                                 ImGui::PushItemWidth(120);
                                 ImGui::InputInt("cost", &uppgradeInnputArray[row][i]);
@@ -389,10 +384,10 @@ int main(void)
                                 if (ShowUppgardeNote[row][i])
                                 {
                                     ImGui::SameLine();
-                                    
+                                    std::string print_Uppgrade_Note = "Note" + row + i;
                                     static ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput;
                                     flags = ImGuiInputTextFlags_CtrlEnterForNewLine;
-                                    ImGui::InputTextMultiline("##", uppgradeNote[row][i], IM_ARRAYSIZE(uppgradeNote[row][i]),
+                                    ImGui::InputTextMultiline(print_Uppgrade_Note.c_str(), uppgradeNote[row][i], IM_ARRAYSIZE(uppgradeNote[row][i]),
                                                                                 ImVec2(-FLT_MIN, 90), flags);
                                     
                                 }
@@ -453,7 +448,7 @@ int main(void)
                             make_list_file = true;
                         };
                         ImGui::SameLine();
-                        if (ImGui::Button("Write to File"))
+                        if (ImGui::Button("Save"))
                         {
                             print_2_file = true;
                         };
@@ -516,17 +511,13 @@ int main(void)
 
             ImGui::End();
         }
-        //**
-
-        /*  Render  */
-        ImGui::Render();
+        
+        ImGui::Render();/*  Render  */
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-        /* Swap front and back buffers */
-        glfwSwapBuffers(window);
+        glfwSwapBuffers(window); /* Swap front and back buffers */
 
-        /* Poll for and process events */
-        glfwPollEvents();
+        glfwPollEvents(); /* Poll for and process events */
     }
 
     ImGui_ImplOpenGL3_Shutdown();
