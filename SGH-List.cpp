@@ -10,30 +10,30 @@ int main(void)
 {
     GLFWwindow* window;
 
-    /* Initialize the library */
-    if (!glfwInit())
+    
+    if (!glfwInit())    /* Initialize the library */
         return -1;
 
-    /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(1280, 854, "SGH_List", NULL, NULL);
+    
+    window = glfwCreateWindow(1280, 854, "SGH_List", NULL, NULL);   //Create a windowed mode window and its OpenGL context */
     if (!window)
     {
         glfwTerminate();
         return -1;
     }
 
-    /* Make the window's context current */
-    glfwMakeContextCurrent(window);
-    glfwSwapInterval(1); // Enable vsync
+   
+    glfwMakeContextCurrent(window);         /* Make the window's context current */
+    glfwSwapInterval(1);                    // Enable vsync
 
-    /*  set up  Dear ImGui  */
-    IMGUI_CHECKVERSION();
+   
+    IMGUI_CHECKVERSION();                   /*  set up  Dear ImGui  */
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGuiIO& io = ImGui::GetIO(); (void)io; /*Get Computer IO*/
 
-    //style
+    
 
-    ImGui::StyleColorsDark();
+    ImGui::StyleColorsDark();               //style
 
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330");
@@ -43,22 +43,22 @@ int main(void)
                 make_list_file = false, print_2_file = false;
     ImVec4      clear_color = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);
 
-    //Valu for Upgrade array's                                                           //ARRAY FOR VER VERDI PER UPGRADE, STYRES AV I FRA FORLOOP
-    std::string uppgradeNameArray[200][20];
+                                                     //ARRAY FOR VER VERDI PER UPGRADE, STYRES AV I FRA FORLOOP
+    std::string uppgradeNameArray[200][20];          //Valu for Upgrade array's                                   
     for (int i = 0; i < 200; i++) {
         for (int j = 0; j < 20; j++) {
             uppgradeNameArray[i][j] = "";
         }
     };
 
-    int     uppgradeCostArray[200][20];                                         //UNTAK UPPGARDE NR SOM HOLDER ANATALE UPGRADES 
+    int     uppgradeCostArray[200][20];             //UNTAK UPPGARDE NR SOM HOLDER ANATALE UPGRADES 
     for (int i = 0; i < 200; i++) {
         for (int j = 0; j < 20; j++) {
             uppgradeCostArray[i][j] = 0;
         }
     };
 
-    int     uppgradeInnputArray[200][20];                                         //UNTAK UPPGARDE NR SOM HOLDER ANATALE UPGRADES 
+    int     uppgradeInnputArray[200][20];            //UNTAK UPPGARDE NR SOM HOLDER VILKEN UPPGARDE DU OPPDATERE
     for (int i = 0; i < 200; i++) {
         for (int j = 0; j < 20; j++) {
             uppgradeInnputArray[i][j] = 0;
@@ -79,24 +79,23 @@ int main(void)
     bool        showUnitNote[20] = { false },
                 ShowUppgardeNote[200][20] = { {false} },
                 uppgradeType[200][20] = { {false} };
-    
+
     static char unitName[200][32] = { {} },
                 setUppgradeName[32] = "",
                 unitNote[200][255 * 6] = { {} },
                 uppgradeNote[200][20][255 * 6] = { {} };
 
-    /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window))
+    
+    while (!glfwWindowShouldClose(window))      /* MAIN LOOP */
     {
-        /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT);
+        
+        glClear(GL_COLOR_BUFFER_BIT);           /* Render here */
 
-        /* Nye Frame */
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
+        
+        ImGui_ImplOpenGL3_NewFrame();           /* Nye Frame OpenGL3*/
+        ImGui_ImplGlfw_NewFrame();              /* Nye Frame GLFW   */
+        ImGui::NewFrame();                      /* Nye Frame ImGUI  */
 
-        //**
 
         if (ImGuiDemo)
         {
@@ -292,8 +291,10 @@ int main(void)
 
                             ImGui::EndChild();
                         }
+
                         ImGui::SameLine();
-                        if (ImGui::BeginMenu("- Edit -"))                                    // unit setings
+
+                        if (ImGui::BeginMenu("- Edit -"))                                           // unit setings
                         {
                             ImGui::PushItemWidth(90);
                             ImGui::InputInt("Nr of uppgrade", &uppgradeNrArray[row]);
@@ -359,9 +360,9 @@ int main(void)
                                 ImGui::Text(uppgradeNameArray[row][i].c_str());
 
                                 ImGui::EndChild();
-                            }//name                                                                       // sett figur count child window
-                            ImGui::SameLine();                                                      //same line :D
-                            {//cost                                                                       // sett figur count child window
+                            }//name                                                                         // sett figur count child window
+                            ImGui::SameLine();                                                              //same line :D
+                            {//cost                                                                         // sett figur count child window
                                 std::string print_Uppgrade_cost = "Cost" + row + i;
 
                                 ImGui::BeginChild(print_Uppgrade_cost.c_str(), ImVec2(ImGui::GetContentRegionAvail().x * 0.25f, 24), false);
@@ -512,12 +513,12 @@ int main(void)
             ImGui::End();
         }
         
-        ImGui::Render();/*  Render  */
+        ImGui::Render();            /*  Render  */
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-        glfwSwapBuffers(window); /* Swap front and back buffers */
+        glfwSwapBuffers(window);    /* Swap front and back buffers */
 
-        glfwPollEvents(); /* Poll for and process events */
+        glfwPollEvents();           /* Poll for and process events */
     }
 
     ImGui_ImplOpenGL3_Shutdown();
