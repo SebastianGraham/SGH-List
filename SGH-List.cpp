@@ -15,7 +15,7 @@ int main(void)
         return -1;
 
 
-    window = glfwCreateWindow(1280, 854, "SGH_List", NULL, NULL);   //Create a windowed mode window and its OpenGL context */
+    window = glfwCreateWindow(1680, 820, "SGH_List", NULL, NULL);   //Create a windowed mode window and its OpenGL context */
     if (!window)
     {
         glfwTerminate();
@@ -312,6 +312,48 @@ int main(void)
                         ImGui::Text("  |  All Model cost: %d", tootleSum);
                     }
 
+                    for (size_t un_up = 0; un_up < uppgradeNrArray[Unit_Load]; un_up++)
+                    {
+                        ImGui::PushID(un_up);
+                        {
+                            ImGui::BeginChild("Child Windo", ImVec2(ImGui::GetContentRegionAvail().x * 0.40f, 55), true);
+
+                            //
+                            ImGui::PushItemWidth(320);
+                            ImGui::Text("name : %s", uppgradeNameArray[Unit_Load][un_up].c_str());
+                            
+                            ImGui::SameLine();
+                            ImGui::PushItemWidth(90);
+                            ImGui::InputInt("##Uppgrade cost", &uppgradeCostArray[Unit_Load][un_up]);
+                            ImGui::PushItemWidth(410);
+
+
+                            if (ImGui::BeginMenu("Uppgrade menu"))
+                            {
+                                
+                                ImGui::InputText("##Uppgrade Name", setUppgradeName, IM_ARRAYSIZE(setUppgradeName));
+                                ImGui::SameLine();
+
+                                if (ImGui::ArrowButton) 
+                                {
+                                    uppgradeNameArray[Unit_Load][un_up] = setUppgradeCost;
+                                }
+
+                                ImGui::Checkbox("uppgarde type", &uppgradeType[Unit_Load][un_up]);
+                                ImGui::SameLine;
+                                ImGui::Checkbox("uppgarde note", &ShowUppgardeNote[Unit_Load][un_up]);
+
+                                
+
+                                ImGui::EndMenu();
+                            }
+                            //
+
+                            ImGui::EndChild();
+                        }
+                        ImGui::PopID();
+                    }
+
                     ImGui::SeparatorText("## unit end");
                     ImGui::PopID();
                 }
@@ -383,12 +425,6 @@ int main(void)
         return 0;
     
 }//main
-
-
-
-
-               // ImGuiTabBarFlags unit_flags = 0;
-               //unit_flags |= ImGuiWindowFlags_NoResize;
 
                /* for (int row = 0; row < UnitNr; row++)
                 {
@@ -465,16 +501,7 @@ int main(void)
 
                         if (ImGui::BeginTabItem("seting"))
                         {
-                            if (ImGui::Button("Close App"))
-                            {
-                                ImGui_ImplOpenGL3_Shutdown();
-                                ImGui_ImplGlfw_Shutdown();
-                                ImGui::DestroyContext();
-
-                                glfwDestroyWindow(window);
-                                glfwTerminate();
-                                return 0;
-                            }
+                           
                             ImGui::SameLine();
                             ImGui::Checkbox("debug", &statestik);
                             ImGui::SameLine();
