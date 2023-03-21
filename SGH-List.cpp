@@ -230,7 +230,7 @@ int main(void)
                 if (ImGui::BeginMenu("Print"))                                  // queek print menu
                 {
                     ImGui::MenuItem("Make .txt list", NULL, &make_list_file);   // make a .txt file
-                    ImGui::MenuItem("Save", NULL, &print_2_file);        // Uppdate List
+                    ImGui::MenuItem("Save", NULL, &print_2_file);               // Uppdate List
 
                     ImGui::EndMenu();
                 }
@@ -330,7 +330,8 @@ int main(void)
 
                             if (ImGui::BeginMenu("Uppgrade menu"))
                             {
-                                
+                                ImGui::PushID(un_up + Unit_Load);
+
                                 ImGui::InputText("##Uppgrade Name", setUppgradeName, IM_ARRAYSIZE(setUppgradeName));
                                 ImGui::SameLine();
 
@@ -344,7 +345,7 @@ int main(void)
                                 ImGui::Checkbox("uppgarde note", &ShowUppgardeNote[Unit_Load][un_up]);
 
                                 
-
+                                ImGui::PopID();
                                 ImGui::EndMenu();
                             }
                             //
@@ -425,97 +426,3 @@ int main(void)
         return 0;
     
 }//main
-
-               /* for (int row = 0; row < UnitNr; row++)
-                {
-                    {                                                                           // sett figur count child window
-                        std::string unitRap = "unit Rap" + row;
-                        ImGui::BeginChild("u", ImVec2(ImGui::GetContentRegionAvail().x * 0.70f, 21), false, unit_flags);
-
-                        ImGui::Text("Name -> ");
-
-                        ImGui::SameLine();
-
-                        ImGui::InputText("##", unitName[row], IM_ARRAYSIZE(unitName[row]));
-
-                        ImGui::SameLine();
-
-                        if (ImGui::BeginMenu("- Edit -"))                                           // unit setings
-                        {
-                            ImGui::PushItemWidth(90);
-                            ImGui::InputInt("Nr of uppgrade", &uppgradeNrArray[row]);
-                            ImGui::Checkbox("Show unit Note", &showUnitNote[row]);
-
-                            ImGui::EndMenu();                                                      //sluter meny
-                        }
-
-                        ImGui::EndChild();
-                    }
-                }//row */
-
-               /* ImGui::SameLine();
-
-                {//list menu edit
-                    ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
-                    ImGuiWindowFlags window_flags_Rsid = ImGuiWindowFlags_NoScrollbar;
-                    ImGui::BeginChild("righte side", ImVec2(ImGui::GetContentRegionAvail().x * 0.99f, winSiz.y), false, window_flags_Rsid);
-                    if (ImGui::BeginTabBar("MyTabBar", tab_bar_flags))
-                    {
-                        if (ImGui::BeginTabItem("Make List"))
-                        {
-                            ImGui::Text("Print Out:");
-                            if (ImGui::Button("make file"))
-                            {
-                                make_list_file = true;
-                            };
-                            ImGui::SameLine();
-                            if (ImGui::Button("Save"))
-                            {
-                                print_2_file = true;
-                            };
-                            ImGui::Text("how many Unit's?");
-                            ImGui::InputInt("##", &UnitNr);
-
-                            ImGui::Text("Uppgrade selecter:");
-
-                            ImGui::InputInt("select unit", &unitSelected);
-
-                            ImGui::InputInt("select uppgrade", &uppgradeSelected);
-
-                            ImGui::InputInt("Uppgrade Cost", &setUppgradeCost);
-                            {
-                                ImGui::BeginChild("sett uppgarde name", ImVec2(ImGui::GetContentRegionAvail().x * 0.71f, 21), false);
-
-                                ImGui::InputText("name", setUppgradeName, IM_ARRAYSIZE(setUppgradeName));
-
-                                ImGui::EndChild();
-                            }
-
-                            if (ImGui::SmallButton("   !Sett name end pric!   "))
-                            {
-                                uppgradeCostArray[unitSelected][uppgradeSelected] = setUppgradeCost;
-                                uppgradeNameArray[unitSelected][uppgradeSelected] = setUppgradeName;
-                            };
-                            ImGui::EndTabItem();
-                        }
-
-                        if (ImGui::BeginTabItem("seting"))
-                        {
-                           
-                            ImGui::SameLine();
-                            ImGui::Checkbox("debug", &statestik);
-                            ImGui::SameLine();
-                            ImGui::Checkbox("Demo", &ImGuiDemo);
-
-                            ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-                            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-                            ImGui::ShowFontSelector("font");
-                            //ImGui::ShowStyleEditor();
-                            //ImGui::ShowStyleSelector("styl");
-
-                            ImGui::EndTabItem();
-                        }
-
-                        ImGui::EndTabBar();
-                    }
-                }// List menu edit */
