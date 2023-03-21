@@ -303,7 +303,8 @@ int main(void)
 
                         TootleCostFigure = unitFigerCost[Unit_ID] * unitFigerCount[Unit_ID];        // logic
 
-                        ImGui::Text("  Totle: %d", TootleCostFigure);
+
+                        ImGui::Text("Totle: %d + uppgrade: %d", TootleCostFigure);
 
                         ImGui::EndChild();
                     }
@@ -321,7 +322,7 @@ int main(void)
                     {
                         ImGui::PushID(Uppgrade_ID);
                         {
-                            ImGui::BeginChild("Child Windo", ImVec2(ImGui::GetContentRegionAvail().x * 0.42f, 55), false);
+                            ImGui::BeginChild("Mid L", ImVec2(ImGui::GetContentRegionAvail().x * 0.42f, 55), false);
 
                             ImGui::Separator();
                             ImGui::SameLine();
@@ -342,6 +343,10 @@ int main(void)
                                 if (ImGui::SmallButton(" <- ##Set name Button"))
                                 {
                                     uppgradeNameArray[Unit_ID][Uppgrade_ID] = setUppgradeName;
+                                    for (size_t i = 0; i < 32; i++)
+                                    {
+                                        setUppgradeName[i] = 0;
+                                    }
                                 }
 
                                 ImGui::InputInt("##Uppgrade cost", &uppgradeCostArray[Unit_ID][Uppgrade_ID]);
@@ -359,14 +364,15 @@ int main(void)
                             
                             ImGui::EndChild();
                         }
-
-                        if (ShowUppgardeNote[Unit_ID][Uppgrade_ID])
+                        ImGui::SameLine();
                         {
-                            ImGui::SameLine();
-                            ImGui::InputTextMultiline("## Uppgarde Note", uppgradeNote[Unit_ID][Uppgrade_ID], IM_ARRAYSIZE(uppgradeNote[Unit_ID][Uppgrade_ID]), ImVec2(500, 55));
-
+                            ImGui::BeginChild("Mid r", ImVec2(ImGui::GetContentRegionAvail().x * 0.80f, 55), false);
+                            if (ShowUppgardeNote[Unit_ID][Uppgrade_ID])
+                            {
+                                ImGui::InputTextMultiline("## Uppgarde Note", uppgradeNote[Unit_ID][Uppgrade_ID], IM_ARRAYSIZE(uppgradeNote[Unit_ID][Uppgrade_ID]), ImVec2(500, 55));
+                            }
+                            ImGui::EndChild();
                         }
-
 
                         ImGui::PopID();
                     }/*Uppgarde Loop*/
