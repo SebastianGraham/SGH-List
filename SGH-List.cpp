@@ -68,13 +68,8 @@ int main(void)
     static char listName[32] = "";
 
     int         uppgradeCost = 0, uppgradeNr = 0, uppgradeNrArray[20] = {},
-        unitFigerCount[200] = {}, UnitNr = 0, unitFigerCost[200] = {},
-        tootleSum = 0;
-
-    // sett upgrade velus
-    int         uppgradeSelected = 0,
-        unitSelected = 0,
-        setUppgradeCost = 0;
+        unitFigerCount[200] = {},  unitFigerCost[200] = {},                 //cost & count
+        TootleCostFigure = 0, UnitNr = 0, ListCost = 0;
 
     bool        showUnitNote[20] = { false },
         ShowUppgardeNote[200][20] = { {false} },
@@ -239,9 +234,9 @@ int main(void)
             }
 
             {
-                ImGui::BeginChild("Top 1", ImVec2(ImGui::GetContentRegionAvail().x * 0.65f, viewport->Size.y), false, NULL);
+                ImGui::BeginChild("List windo", ImVec2(ImGui::GetContentRegionAvail().x * 0.65f, viewport->Size.y), false, NULL);
                 {
-                    ImGui::BeginChild("topPartL", ImVec2(ImGui::GetContentRegionAvail().x * 0.33f, 30), false, ImGuiWindowFlags_NoScrollbar);
+                    ImGui::BeginChild("Top 1", ImVec2(ImGui::GetContentRegionAvail().x * 0.33f, 30), false, ImGuiWindowFlags_NoScrollbar);
 
                     ImGui::Text("List name");
                     ImGui::SameLine();
@@ -252,7 +247,7 @@ int main(void)
 
                     ImGui::EndChild();
                 }
-                ImGui::SameLine();                                      //To make Top L & R to saty on same line
+                ImGui::SameLine();                                      
                 {
                     ImGui::BeginChild("top 2", ImVec2(ImGui::GetContentRegionAvail().x * 0.85f, 30), false, ImGuiWindowFlags_NoScrollbar);
                     ImGui::Text("Unit's");
@@ -264,11 +259,11 @@ int main(void)
 
                     ImGui::EndChild();
                 }
-                ImGui::SameLine();                                      //To make Top L & R to saty on same line
+                ImGui::SameLine();                                      
                 {
                     ImGui::BeginChild("top 3", ImVec2(ImGui::GetContentRegionAvail().x * 1.0f, 30), false, ImGuiWindowFlags_NoScrollbar);
                     
-                    ImGui::Text("total : %d", tootleSum);
+                    ImGui::Text("total : %d", ListCost);
                     ImGui::SameLine();
                     ImGui::SeparatorText("##Line 3");
 
@@ -279,52 +274,57 @@ int main(void)
 
                 for (size_t Unit_ID = 0; Unit_ID < UnitNr; Unit_ID++)
                 {
-                    //std::string Unit_ID = "unit ID" + Unit_Load + UnitNr;
-                    
                     ImGui::PushID(Unit_ID);
+
                     ImGui::Separator();
                     ImGui::SameLine();
-                    ImGui::PushItemWidth(350);
-                    ImGui::InputText("## Unit name", unitName[Unit_ID], IM_ARRAYSIZE(unitName[Unit_ID]));
-                    ImGui::SameLine();
-                    if (ImGui::BeginMenu("- Edit -"))                                           // unit setings
+                    //windo
                     {
+                        ImGui::BeginChild("Unit Top ", ImVec2(ImGui::GetContentRegionAvail().x * 0.40f, 50), false, ImGuiWindowFlags_NoScrollbar);
+
+                        ImGui::PushItemWidth(350);
+                        ImGui::InputText("## Unit name", unitName[Unit_ID], IM_ARRAYSIZE(unitName[Unit_ID]));
+                        ImGui::SameLine();
+                        if (ImGui::BeginMenu("    - Edit -"))                                           // unit setings
+                        {
+                            ImGui::PushItemWidth(90);
+                            ImGui::InputInt("Nr of uppgrade", &uppgradeNrArray[Unit_ID]);
+                            ImGui::Checkbox("Show unit Note", &showUnitNote[Unit_ID]);
+
+                            ImGui::EndMenu();                                                      //sluter meny
+                        }
+
                         ImGui::PushItemWidth(90);
-                        ImGui::InputInt("Nr of uppgrade", &uppgradeNrArray[Unit_ID]);
-                        ImGui::Checkbox("Show unit Note", &showUnitNote[Unit_ID]);
+                        ImGui::InputInt("figur's", &unitFigerCount[Unit_ID]);
+                        ImGui::SameLine();
+                        ImGui::PushItemWidth(90);
+                        ImGui::InputInt("cost", &unitFigerCost[Unit_ID]);
+                        ImGui::SameLine();
 
-                        ImGui::EndMenu();                                                      //sluter meny
+                        TootleCostFigure = unitFigerCost[Unit_ID] * unitFigerCount[Unit_ID];        // logic
+
+                        ImGui::Text("  Totle: %d", TootleCostFigure);
+
+                        ImGui::EndChild();
                     }
-
-                    ImGui::PushItemWidth(90);
-                    ImGui::InputInt("Nr of figurs", &unitFigerCount[Unit_ID]);
-                    ImGui::SameLine();
-                    ImGui::PushItemWidth(90);
-                    ImGui::InputInt("cost", &unitFigerCost[Unit_ID]);
-
-                    tootleSum = unitFigerCost[Unit_ID] * unitFigerCount[Unit_ID];
 
                     if (showUnitNote[Unit_ID])
                     { 
                         ImGui::SameLine();
-                        ImGui::InputTextMultiline("## Unit Note", unitNote[Unit_ID], IM_ARRAYSIZE(unitNote[Unit_ID]), ImVec2(430,50));
+                        ImGui::InputTextMultiline("## Unit Note", unitNote[Unit_ID], IM_ARRAYSIZE(unitNote[Unit_ID]), ImVec2(500,50));
 
-                        ImGui::Text("All Model cost: %d", tootleSum);
                     }
-
-                    if (!showUnitNote[Unit_ID])
-                    {
-                        ImGui::SameLine();
-                        ImGui::Text("  |  All Model cost: %d", tootleSum);
-                    }
+                    //
+                    //===================================================================================>> uppgarde forloop
 
                     for (size_t Uppgrade_ID = 0; Uppgrade_ID < uppgradeNrArray[Unit_ID]; Uppgrade_ID++)
                     {
                         ImGui::PushID(Uppgrade_ID);
                         {
-                            ImGui::BeginChild("Child Windo", ImVec2(ImGui::GetContentRegionAvail().x * 0.40f, 55), true);
+                            ImGui::BeginChild("Child Windo", ImVec2(ImGui::GetContentRegionAvail().x * 0.42f, 55), false);
 
-                            //
+                            ImGui::Separator();
+                            ImGui::SameLine();
                             ImGui::PushItemWidth(320);
                             ImGui::Text("name : %s", uppgradeNameArray[Unit_ID][Uppgrade_ID].c_str());
                             
@@ -351,19 +351,29 @@ int main(void)
                                 ImGui::Checkbox("note", &ShowUppgardeNote[Unit_ID][Uppgrade_ID]);
 
                                 
-
                                 ImGui::EndMenu();
                             }
-                            //
 
+                            
+                            ImGui::Separator();
+                            
                             ImGui::EndChild();
                         }
+
+                        if (ShowUppgardeNote[Unit_ID][Uppgrade_ID])
+                        {
+                            ImGui::SameLine();
+                            ImGui::InputTextMultiline("## Uppgarde Note", uppgradeNote[Unit_ID][Uppgrade_ID], IM_ARRAYSIZE(uppgradeNote[Unit_ID][Uppgrade_ID]), ImVec2(500, 55));
+
+                        }
+
+
                         ImGui::PopID();
-                    }
+                    }/*Uppgarde Loop*/
 
                     ImGui::Separator();
                     ImGui::PopID();
-                }
+                }//Unit Loop
 
                 {
                     ImGui::BeginChild("BottomPartL", ImVec2(ImGui::GetContentRegionAvail().x * 0.01f, 30), false, ImGuiWindowFlags_NoScrollbar);
@@ -375,13 +385,12 @@ int main(void)
                 ImGui::SameLine();                                      //To make Top L & R to saty on same line
                 {
                     ImGui::BeginChild("BottomPartR", ImVec2(ImGui::GetContentRegionAvail().x * 1.0f, 30), false, ImGuiWindowFlags_NoScrollbar);
-                    ImGui::Text("Total: %d",tootleSum);
+                    ImGui::Text("Total: %d",ListCost);
                     ImGui::SameLine();
                     ImGui::SeparatorText("##Bottom R");
                     
                     ImGui::EndChild();
                 }
-                //ImGui::SeparatorText("Total: %d");
                 ImGui::EndChild();
             }                   // List side
 
