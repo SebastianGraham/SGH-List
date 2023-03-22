@@ -69,7 +69,7 @@ int main(void)
 
     int         uppgradeCost = 0, uppgradeNr = 0, uppgradeNrArray[20] = {},
         unitFigerCount[200] = {},  unitFigerCost[200] = {},                 //cost & count
-        TootleCostFigure = 0, UnitNr = 0, ListCost = 0;
+        TootleCostFigure = 0, UnitNr = 0, ListCost = 0, TootleUnitCost = 0;
 
     bool        showUnitNote[20] = { false },
         ShowUppgardeNote[200][20] = { {false} },
@@ -302,9 +302,16 @@ int main(void)
                         ImGui::SameLine();
 
                         TootleCostFigure = unitFigerCost[Unit_ID] * unitFigerCount[Unit_ID];        // logic
+                        TootleUnitCost = TootleUnitCost + TootleCostFigure;
+                        for (size_t Uppgrade_ID = 0; Uppgrade_ID < uppgradeNrArray[Unit_ID]; Uppgrade_ID++)
+                        {
+                            TootleUnitCost = TootleUnitCost + uppgradeCostArray[Unit_ID][Uppgrade_ID];
+                        }
 
+                        ImGui::Text("Totle: %d", TootleCostFigure);
+                        ImGui::SameLine();
+                        ImGui::Text(" + up: %d", TootleUnitCost);
 
-                        ImGui::Text("Totle: %d + uppgrade: %d", TootleCostFigure);
 
                         ImGui::EndChild();
                     }
