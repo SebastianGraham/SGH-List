@@ -69,7 +69,9 @@ int main(void)
 
     int         uppgradeCost = 0, uppgradeNr = 0, uppgradeNrArray[20] = {},
         unitFigerCount[200] = {}, unitFigerCost[200] = {},                 //cost & count
-        TootleCostFigure = 0, UnitNr = 0, ListCost = 0, TootleUnitCost = 0;
+        TootleCostFigure = 0, UnitNr = 0, ListCost = 0;
+
+    int     TootleUnitCost = 0;                 //lag om til funcson
 
     bool        showUnitNote[20] = { false },
         ShowUppgardeNote[200][20] = { {false} },
@@ -272,6 +274,8 @@ int main(void)
 
                 ImGui::SeparatorText("Unit's##top part");
 
+                ListCost = 0;
+
                 for (size_t Unit_ID = 0; Unit_ID < UnitNr; Unit_ID++)
                 {
                     ImGui::PushID(Unit_ID);
@@ -301,12 +305,18 @@ int main(void)
                         ImGui::InputInt("cost", &unitFigerCost[Unit_ID]);
                         ImGui::SameLine();
 
-                        TootleCostFigure = unitFigerCost[Unit_ID] * unitFigerCount[Unit_ID];        // logic
-                        TootleUnitCost = TootleUnitCost + TootleCostFigure;
+                        /* Logic */
+
+                        TootleCostFigure = unitFigerCost[Unit_ID] * unitFigerCount[Unit_ID];
+
+                        TootleUnitCost = 0 + TootleCostFigure;
+
                         for (size_t Uppgrade_ID = 0; Uppgrade_ID < uppgradeNrArray[Unit_ID]; Uppgrade_ID++)
                         {
                             TootleUnitCost = TootleUnitCost + uppgradeCostArray[Unit_ID][Uppgrade_ID];
                         }
+                        
+                        ListCost = ListCost + TootleUnitCost;
 
                         ImGui::Text("Totle: %d", TootleCostFigure);
                         ImGui::SameLine();
@@ -380,6 +390,10 @@ int main(void)
                             }
                             ImGui::EndChild();
                         }
+
+                        /*Logic for - List Cost*/
+
+
 
                         ImGui::PopID();
                     }/*Uppgarde Loop*/
