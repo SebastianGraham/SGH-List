@@ -68,8 +68,8 @@ int main(void)
     static char listName[32] = "";
 
     int         uppgradeCost = 0, uppgradeNr = 0, uppgradeNrArray[20] = {},
-        unitFigerCount[200] = {},  unitFigerCost[200] = {},                 //cost & count
-        TootleCostFigure = 0, UnitNr = 0, ListCost = 0;
+        unitFigerCount[200] = {}, unitFigerCost[200] = {},                 //cost & count
+        TootleCostFigure = 0, UnitNr = 0, ListCost = 0, TootleUnitCost = 0;
 
     bool        showUnitNote[20] = { false },
         ShowUppgardeNote[200][20] = { {false} },
@@ -247,7 +247,7 @@ int main(void)
 
                     ImGui::EndChild();
                 }
-                ImGui::SameLine();                                      
+                ImGui::SameLine();
                 {
                     ImGui::BeginChild("top 2", ImVec2(ImGui::GetContentRegionAvail().x * 0.85f, 30), false, ImGuiWindowFlags_NoScrollbar);
                     ImGui::Text("Unit's");
@@ -259,10 +259,10 @@ int main(void)
 
                     ImGui::EndChild();
                 }
-                ImGui::SameLine();                                      
+                ImGui::SameLine();
                 {
                     ImGui::BeginChild("top 3", ImVec2(ImGui::GetContentRegionAvail().x * 1.0f, 30), false, ImGuiWindowFlags_NoScrollbar);
-                    
+
                     ImGui::Text("total : %d", ListCost);
                     ImGui::SameLine();
                     ImGui::SeparatorText("##Line 3");
@@ -302,17 +302,24 @@ int main(void)
                         ImGui::SameLine();
 
                         TootleCostFigure = unitFigerCost[Unit_ID] * unitFigerCount[Unit_ID];        // logic
+                        TootleUnitCost = TootleUnitCost + TootleCostFigure;
+                        for (size_t Uppgrade_ID = 0; Uppgrade_ID < uppgradeNrArray[Unit_ID]; Uppgrade_ID++)
+                        {
+                            TootleUnitCost = TootleUnitCost + uppgradeCostArray[Unit_ID][Uppgrade_ID];
+                        }
 
+                        ImGui::Text("Totle: %d", TootleCostFigure);
+                        ImGui::SameLine();
+                        ImGui::Text(" + up: %d", TootleUnitCost);
 
-                        ImGui::Text("Totle: %d + uppgrade: %d", TootleCostFigure);
 
                         ImGui::EndChild();
                     }
 
                     if (showUnitNote[Unit_ID])
-                    { 
+                    {
                         ImGui::SameLine();
-                        ImGui::InputTextMultiline("## Unit Note", unitNote[Unit_ID], IM_ARRAYSIZE(unitNote[Unit_ID]), ImVec2(500,50));
+                        ImGui::InputTextMultiline("## Unit Note", unitNote[Unit_ID], IM_ARRAYSIZE(unitNote[Unit_ID]), ImVec2(500, 50));
 
                     }
                     //
@@ -328,7 +335,7 @@ int main(void)
                             ImGui::SameLine();
                             ImGui::PushItemWidth(320);
                             ImGui::Text("name : %s", uppgradeNameArray[Unit_ID][Uppgrade_ID].c_str());
-                            
+
                             ImGui::SameLine();
                             ImGui::PushItemWidth(90);
                             ImGui::InputInt("##Uppgrade cost", &uppgradeCostArray[Unit_ID][Uppgrade_ID]);
@@ -337,7 +344,7 @@ int main(void)
 
                             if (ImGui::BeginMenu("Uppgrade menu"))
                             {
-                                
+
                                 ImGui::InputText("##Uppgrade Name", setUppgradeName, IM_ARRAYSIZE(setUppgradeName));
                                 ImGui::SameLine();
                                 if (ImGui::SmallButton(" <- ##Set name Button"))
@@ -355,13 +362,13 @@ int main(void)
                                 ImGui::SameLine;
                                 ImGui::Checkbox("note", &ShowUppgardeNote[Unit_ID][Uppgrade_ID]);
 
-                                
+
                                 ImGui::EndMenu();
                             }
 
-                            
+
                             ImGui::Separator();
-                            
+
                             ImGui::EndChild();
                         }
                         ImGui::SameLine();
@@ -391,10 +398,10 @@ int main(void)
                 ImGui::SameLine();                                      //To make Top L & R to saty on same line
                 {
                     ImGui::BeginChild("BottomPartR", ImVec2(ImGui::GetContentRegionAvail().x * 1.0f, 30), false, ImGuiWindowFlags_NoScrollbar);
-                    ImGui::Text("Total: %d",ListCost);
+                    ImGui::Text("Total: %d", ListCost);
                     ImGui::SameLine();
                     ImGui::SeparatorText("##Bottom R");
-                    
+
                     ImGui::EndChild();
                 }
                 ImGui::EndChild();
@@ -404,7 +411,7 @@ int main(void)
 
             {
                 ImGui::BeginChild("List Menu side", ImVec2(ImGui::GetContentRegionAvail().x * 1.0f, viewport->Size.y), false, NULL);
-                
+
                 if (ImGui::BeginTabBar("menu Tab Bar", 0))
                 {
                     if (ImGui::BeginTabItem(" prewi "))
@@ -414,7 +421,7 @@ int main(void)
                     }
                     if (ImGui::BeginTabItem(" queek edit "))
                     {
-                        
+
                         ImGui::EndTabItem();
                     }
                     if (ImGui::BeginTabItem("print Out"))
@@ -434,23 +441,23 @@ int main(void)
                     }
                     if (ImGui::BeginTabItem(" setings "))
                     {
-                            static const char* item_names[] = { "Item One", "Item Two", "Item Three", "Item Four", "Item Five" };
-                            for (int n = 0; n < IM_ARRAYSIZE(item_names); n++)
-                            {
-                                const char* item = item_names[n];
-                                ImGui::Selectable(item);
+                        static const char* item_names[] = { "Item One", "Item Two", "Item Three", "Item Four", "Item Five" };
+                        for (int n = 0; n < IM_ARRAYSIZE(item_names); n++)
+                        {
+                            const char* item = item_names[n];
+                            ImGui::Selectable(item);
 
-                                if (ImGui::IsItemActive() && !ImGui::IsItemHovered())
+                            if (ImGui::IsItemActive() && !ImGui::IsItemHovered())
+                            {
+                                int n_next = n + (ImGui::GetMouseDragDelta(0).y < 0.f ? -1 : 1);
+                                if (n_next >= 0 && n_next < IM_ARRAYSIZE(item_names))
                                 {
-                                    int n_next = n + (ImGui::GetMouseDragDelta(0).y < 0.f ? -1 : 1);
-                                    if (n_next >= 0 && n_next < IM_ARRAYSIZE(item_names))
-                                    {
-                                        item_names[n] = item_names[n_next];
-                                        item_names[n_next] = item;
-                                        ImGui::ResetMouseDragDelta();
-                                    }
+                                    item_names[n] = item_names[n_next];
+                                    item_names[n_next] = item;
+                                    ImGui::ResetMouseDragDelta();
                                 }
                             }
+                        }
 
                         ImGui::EndTabItem();
                     }
@@ -463,19 +470,19 @@ int main(void)
             ImGui::End();// End main prog win
         }
 
-           ImGui::Render();                           /*  Render  */
-           ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-           glfwSwapBuffers(window);/* Swap front and back buffers */
-           glfwPollEvents();       /* Poll for and process events */
+        ImGui::Render();                           /*  Render  */
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        glfwSwapBuffers(window);/* Swap front and back buffers */
+        glfwPollEvents();       /* Poll for and process events */
 
     }//wheal
 
-        ImGui_ImplOpenGL3_Shutdown();
-        ImGui_ImplGlfw_Shutdown();
-        ImGui::DestroyContext();
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 
-        glfwDestroyWindow(window);
-        glfwTerminate();
-        return 0;
-    
+    glfwDestroyWindow(window);
+    glfwTerminate();
+    return 0;
+
 }//main
